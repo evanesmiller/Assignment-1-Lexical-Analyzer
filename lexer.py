@@ -88,6 +88,4 @@ def main():
                 break
 
             token, lexeme, index = result
-
-            print(f"{token:<12} {lexeme}")
-            out.write(f"{token:<12} {lexeme}\n")
+            out.write(f"{lexeme:<12} | {token}\n")
