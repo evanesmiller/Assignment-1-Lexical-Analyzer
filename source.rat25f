@@ -1,4 +1,3 @@
-# ADD 3 TEST CASES
 int x = foo;
 double y = 12.34;
 y = y + 1;
