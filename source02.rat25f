@@ -1,0 +1,19 @@
+function main()
+{
+    int a;
+    int b;
+    real c;
+
+    a = 10;
+    b = 20;
+    c = a / b;
+
+    if (c < 1.0) {
+        c = c + 1.5;
+    }
+    else {
+        c = c - 0.5;
+    }
+
+    return;
+}

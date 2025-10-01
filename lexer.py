@@ -1,11 +1,11 @@
 
-keywords = {'int', 'float', 'double', 'char', 'while', 'if', 'else', 'ADD MORE'}
-operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&', 'ADD MORE'}
-seperators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.', 'ADD MORE'}
+keywords = {'int', 'float', 'double', 'char', 'while', 'if', 'else'}
+operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&'}
+seperators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
 
 
-def lex_indentifier(text, i):
+def lex_identifier(text, i):
     
     state = "start"
     lexeme = ""
@@ -38,30 +38,78 @@ def lex_integer(text, i):
     state = "start"
     lexeme = ""
 
+    while i < len(text):
+        ch = text[i]
+        if state == "start":
+            if ch.isdigit():
+                state = "int"
+                lexeme += ch
+                i += 1
+            else:
+                break
+        elif state == "int":
+            if ch.isdigit():
+                lexeme += ch
+                i += 1
+            else:
+                break
+        
+    if state == "int":
+        return "Integer", lexeme, i
+    return None
 
 
 
 def lex_real(text, i):
     
-     state = "start"
-     lexeme = ""
+    state = "start"
+    lexeme = ""
+    decimal_found = False
 
+    while i < len(text):
+         ch = text[i]
+         if state == "start":
+            if ch.isdigit():
+                 state = "real"
+                 lexeme += ch
+                 i += 1
+            else:
+                break
+         elif state == "real":
+            if ch.isdigit():
+                 lexeme += ch
+                 i += 1
+            elif ch == "." and not decimal_found:
+                decimal_found = True
+                lexeme += ch
+                i += 1
+            else:
+                break
+
+    if decimal_found:
+        return "Real", lexeme, i
+    return None
+    
+
+         
 
 
 def lexer(text, start_index):
 
     # Identifer FSM
-    result = lex_indentifier(text, start_index)
+    result = lex_identifier(text, start_index)
     if result:
         return result
 
     # Integer FSM
     result = lex_integer(text, start_index)
-
+    if result:
+        return result
 
     # Real FSM
     result = lex_real(text, start_index)
-
+    if result:
+        return result
 
     # Operators and Seperators
     ch = text[start_index]
@@ -73,7 +121,7 @@ def lexer(text, start_index):
 
 def main():
 
-    with open("source.rat25f", "r") as f:
+    with open("source01.rat25f", "r") as f:
         source_code = f.read()
 
     index = 0
@@ -88,4 +136,9 @@ def main():
                 break
 
             token, lexeme, index = result
+            print(f"{lexeme:<12} | {token}\n")
             out.write(f"{lexeme:<12} | {token}\n")
+
+
+if __name__ == "__main__":
+    main()
