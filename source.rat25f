@@ -1,3 +1,9 @@
 # ADD 3 TEST CASES
+int x = foo;
+double y = 12.34;
+y = y + 1;
+while (x == 10 && y > 2) {
+    x = x - 1;
+}
 
 
