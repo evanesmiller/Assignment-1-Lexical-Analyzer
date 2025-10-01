@@ -126,6 +126,12 @@ def main():
 
     index = 0
     with open("output.txt", "w") as out:
+
+        print("  Token         |      Lexeme\n")
+        print("'''''''''''''''''''''''''''''\n")
+        out.write("  Token         |      Lexeme\n")
+        out.write("''''''''''''''''''''''''''''''\n")
+
         while index < len(source_code):
             if source_code[index].isspace():
                 index += 1
@@ -136,8 +142,9 @@ def main():
                 break
 
             token, lexeme, index = result
-            print(f"{lexeme:<12} | {token}\n")
-            out.write(f"{lexeme:<12} | {token}\n")
+            
+            print(f"{token:<15} | {lexeme:>10}\n")
+            out.write(f"{token:<15} | {lexeme:>10}\n")
 
 
 if __name__ == "__main__":
