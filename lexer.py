@@ -121,30 +121,37 @@ def lexer(text, start_index):
 
 def main():
 
-    with open("source01.rat25f", "r") as f:
-        source_code = f.read()
 
-    index = 0
-    with open("output.txt", "w") as out:
+    sources = ["source01.rat25f", "source02.rat25f", "source03.rat25f"]
+    outputs = ["output01.txt", "output02.txt", "output03.txt"]
 
-        print("  Token         |      Lexeme\n")
-        print("'''''''''''''''''''''''''''''\n")
-        out.write("  Token         |      Lexeme\n")
-        out.write("''''''''''''''''''''''''''''''\n")
+    for filename, output_filename in zip(sources, outputs):
 
-        while index < len(source_code):
-            if source_code[index].isspace():
-                index += 1
-                continue
+        with open(filename, "r") as f:
+            source_code = f.read()
 
-            result = lexer(source_code, index)
-            if not result:
-                break
+        with open(output_filename, "w") as out:
 
-            token, lexeme, index = result
+            print("  Token         |      Lexeme\n")
+            print("'''''''''''''''''''''''''''''\n")
+            out.write("  Token         |      Lexeme\n")
+            out.write("''''''''''''''''''''''''''''''\n")
+
+        
+            index = 0
+            while index < len(source_code):
+                if source_code[index].isspace():
+                    index += 1
+                    continue
+
+                result = lexer(source_code, index)
+                if not result:
+                    break
+
+                token, lexeme, index = result
             
-            print(f"{token:<15} | {lexeme:>10}\n")
-            out.write(f"{token:<15} | {lexeme:>10}\n")
+                print(f"{token:<15} | {lexeme:>10}\n")
+                out.write(f"{token:<15} | {lexeme:>10}\n")
 
 
 if __name__ == "__main__":
