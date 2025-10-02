@@ -1,7 +1,7 @@
 
 keywords = {'int', 'float', 'double', 'char', 'while', 'if', 'else'}
 operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&'}
-seperators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
+separators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
 
 
@@ -13,25 +13,25 @@ def lex_identifier(text, i):
     while i < len(text):
         ch  = text[i]
 
-        if state == "start":     # at the beginning, we require a letter to start an identifier
-            if ch.isalpha():     # letters start identifiers
-                state = "id"     # move into the identifier-reading state
-                lexeme += ch     # add the first character
-                i += 1           # advance position
+        if state == "start":
+            if ch.isalpha():
+                state = "id"
+                lexeme += ch
+                i += 1
             else:
-                break            # not a letter → this lexer can't consume anything; bail out
-        elif state == "id":      # while inside an identifier
-            if ch.isalnum():     # letters or digits are allowed to continue
-                lexeme += ch     # append character
-                i += 1           # advance position
+                break
+        elif state == "id":
+            if ch.isalnum():
+                lexeme += ch
+                i += 1
             else:
-                break            # any non-alnum ends the identifier
+                break
+    if state == "id":
+        token_type = "Keyword" if lexeme in keywords else "Identifier"
+        return token_type, lexeme, i
+    
+    return None
 
-    if state == "id":                                                   # if we successfully read at least one char
-        token_type = "Keyword" if lexeme in keywords else "Identifier"  # classify as keyword or identifier
-        return token_type, lexeme, i                                    # return (type, text, next_index)
-
-    return None # could not read an identifier at this position
 
 def lex_integer(text, i):
     
@@ -95,12 +95,8 @@ def lex_real(text, i):
 
 
 def lexer(text, start_index):
-    if start_index + 1 < len(text):                     # make sure a 2-char slice is in range
-        two = text[start_index:start_index+2]           # take two characters for multi-char operator check
-        if two in operators:                            # if it's a known 2-char operator (==, &&, ||, etc.)
-            return ("Operator", two, start_index + 2)   # return operator and advance by 2
 
-    # Identifer FSM
+    # Identifier FSM
     result = lex_identifier(text, start_index)
     if result:
         return result
@@ -115,42 +111,47 @@ def lexer(text, start_index):
     if result:
         return result
 
-    # Operators and Seperators
+    # Operators and Separators
     ch = text[start_index]
     if ch in operators:
         return ("Operator", ch, start_index + 1)
-    if ch in seperators:
-        return ("Seperator", ch, start_index + 1)
+    if ch in separators:
+        return ("Separator", ch, start_index + 1)
 
 
 def main():
 
-    with open("source01.rat25f", "r") as f:
-        source_code = f.read()
 
-    index = 0
-    with open("output.txt", "w") as out:
+    sources = ["source01.rat25f", "source02.rat25f", "source03.rat25f"]
+    outputs = ["output01.txt", "output02.txt", "output03.txt"]
 
-        print("  Token         |      Lexeme\n")
-        print("'''''''''''''''''''''''''''''\n")
-        out.write("  Token         |      Lexeme\n")
-        out.write("''''''''''''''''''''''''''''''\n")
+    for filename, output_filename in zip(sources, outputs):
 
-        while index < len(source_code):
-            if source_code[index].isspace():
-                index += 1
-                continue
+        with open(filename, "r") as f:
+            source_code = f.read()
 
-            result = lexer(source_code, index)                  # attempt to lex a token at current index
-            if not result:                                      # if nothing matched here
-                print(f"Unknown: {repr(source_code[index])}")   # report unrecognized character
-                index += 1                                      # skip one char to avoid infinite loop
-                continue                                        # try lexing again at the next position
+        with open(output_filename, "w") as out:
 
-            token, lexeme, index = result
+            print("  Token         |      Lexeme\n")
+            print("'''''''''''''''''''''''''''''\n")
+            out.write("  Token         |      Lexeme\n")
+            out.write("''''''''''''''''''''''''''''''\n")
+
+        
+            index = 0
+            while index < len(source_code):
+                if source_code[index].isspace():
+                    index += 1
+                    continue
+
+                result = lexer(source_code, index)
+                if not result:
+                    break
+
+                token, lexeme, index = result
             
-            print(f"{token:<15} | {lexeme:>10}\n")
-            out.write(f"{token:<15} | {lexeme:>10}\n")
+                print(f"{token:<15} | {lexeme:>10}\n")
+                out.write(f"{token:<15} | {lexeme:>10}\n")
 
 
 if __name__ == "__main__":
