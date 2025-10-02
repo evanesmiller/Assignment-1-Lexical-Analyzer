@@ -1,0 +1,29 @@
+  Token         |      Lexeme
+''''''''''''''''''''''''''''''
+Identifier      |   function
+Identifier      |       main
+Seperator       |          (
+Seperator       |          )
+Seperator       |          {
+Keyword         |        int
+Identifier      |          x
+Seperator       |          ;
+Identifier      |          x
+Operator        |          =
+Integer         |          5
+Seperator       |          ;
+Keyword         |         if
+Seperator       |          (
+Identifier      |          x
+Operator        |          >
+Integer         |          0
+Seperator       |          )
+Seperator       |          {
+Identifier      |          x
+Operator        |          =
+Identifier      |          x
+Operator        |          -
+Integer         |          1
+Seperator       |          ;
+Seperator       |          }
+Seperator       |          }

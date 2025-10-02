@@ -1,0 +1,33 @@
+function main()
+{
+    int i;
+    int sum;
+    real avg;
+
+    i = 0;
+    sum = 0;
+
+    while (i < 10) {
+        sum = sum + i;
+        i = i + 1;
+    }
+
+    avg = sum / 10.0;
+
+    if (avg > 5.0) {
+        print(avg);
+    }
+    else {
+        print(sum);
+    }
+
+    int j;
+    j = 0;
+
+    while (j < 5) {
+        sum = sum - j;
+        j = j + 1;
+    }
+
+    return;
+}
