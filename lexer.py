@@ -42,12 +42,12 @@ def lex_integer(text, i):
         ch = text[i]
         if state == "start":
             if ch.isdigit():
-                state = "int"
+                state = "integer"
                 lexeme += ch
                 i += 1
             else:
                 break
-        elif state == "int":
+        elif state == "integer":
             if ch.isdigit():
                 lexeme += ch
                 i += 1
@@ -101,15 +101,17 @@ def lexer(text, start_index):
     if result:
         return result
 
+    # Real FSM
+    result = lex_real(text, start_index)
+    if result:
+        return result
+    
     # Integer FSM
     result = lex_integer(text, start_index)
     if result:
         return result
 
-    # Real FSM
-    result = lex_real(text, start_index)
-    if result:
-        return result
+    
 
     # Operators and Separators
     ch = text[start_index]
