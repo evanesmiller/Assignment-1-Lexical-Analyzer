@@ -1,5 +1,5 @@
 
-keywords = {'int', 'float', 'double', 'char', 'while', 'if', 'else'}
+keywords = {'integer', 'float', 'double', 'char', 'while', 'if', 'else'}
 operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&'}
 separators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
@@ -91,7 +91,15 @@ def lex_real(text, i):
     return None
     
 
-         
+ def lex_comment(text, i):
+     state = "start"
+     quote_found = False
+
+    while i < len(text):
+        ch = text[i]
+        if state == "start"
+            if ch == '"':
+                i += 1
 
 
 def lexer(text, start_index):
