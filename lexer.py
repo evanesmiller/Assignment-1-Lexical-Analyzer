@@ -54,7 +54,7 @@ def lex_integer(text, i):
             else:
                 break
         
-    if state == "int":
+    if state == "integer":
         return "Integer", lexeme, i
     return None
 
