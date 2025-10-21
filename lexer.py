@@ -1,5 +1,5 @@
 
-keywords = {'integer', 'float', 'double', 'char', 'while', 'if', 'else', 'fi', 'get', 'put'}
+keywords = {'integer', 'boolean', 'function', 'real',  'if', 'else', 'fi', 'return', 'put', 'get', 'while', 'true', 'false'}
 operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&'}
 separators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
