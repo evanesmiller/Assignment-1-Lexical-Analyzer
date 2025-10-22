@@ -97,7 +97,7 @@ def lex_comment(text):
         end = start
         while text[end+1] != '"':
             end += 1
-    return text[0:start] + [end:]
+    return text[0:start] + text[end:]
 
 
 def lexer(text, start_index):
