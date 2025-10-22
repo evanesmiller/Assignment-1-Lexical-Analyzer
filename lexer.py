@@ -6,7 +6,7 @@ separators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
 
 def lex_identifier(text, i):
-    
+    text = lex_comment(text)
     state = "start"
     lexeme = ""
     
@@ -91,15 +91,13 @@ def lex_real(text, i):
     return None
     
 
- def lex_comment(text, i):
-     state = "start"
-     quote_found = False
-
-    while i < len(text):
-        ch = text[i]
-        if state == "start"
-            if ch == '"':
-                i += 1
+def lex_comment(text):
+    start = text.find('"')
+    if start != -1:
+        end = start
+        while text[end+1] != '"':
+            end += 1
+    return text[0:start] + [end:]
 
 
 def lexer(text, start_index):
