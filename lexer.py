@@ -1,15 +1,15 @@
 
 keywords = {'integer', 'boolean', 'function', 'real',  'if', 'else', 'fi', 'return', 'put', 'get', 'while', 'true', 'false'}
-operators = {'+', '-', '*', '/', '%', '=', '==', '<', '>', '||', '&&'}
+operators = {'==', '!=', '>=', '<=', '+', '-', '*', '/', '%', '=', '<', '>', '||', '&&'}
 separators = {'(', ')', '{', '}', '[', ']', ',', ';', ':', '.'}
 
 
 
 def lex_identifier(text, i):
-    text = lex_comment(text)
     state = "start"
     lexeme = ""
-    
+    text = text.lower()
+
     while i < len(text):
         ch  = text[i]
 
@@ -19,9 +19,9 @@ def lex_identifier(text, i):
                 lexeme += ch
                 i += 1
             else:
-                break
+                return None
         elif state == "id":
-            if ch.isalnum():
+            if ch.isalnum() or ch == '$':
                 lexeme += ch
                 i += 1
             else:
@@ -34,70 +34,65 @@ def lex_identifier(text, i):
 
 
 def lex_integer(text, i):
-    
-    state = "start"
+    start = i
     lexeme = ""
 
-    while i < len(text):
-        ch = text[i]
-        if state == "start":
-            if ch.isdigit():
-                state = "integer"
-                lexeme += ch
-                i += 1
-            else:
-                break
-        elif state == "integer":
-            if ch.isdigit():
-                lexeme += ch
-                i += 1
-            else:
-                break
-        
-    if state == "integer":
-        return "Integer", lexeme, i
-    return None
+    while i < len(text) and text[i].isdigit():
+        lexeme += text[i]
+        i += 1
+
+    if not lexeme:
+        return None
+
+    if i < len(text) and (text[i].isalpha() or text[i] == '.'):
+        while i < len(text) and not (text[i].isspace() or text[i] in separators or any(text.startswith(op, i) for op in operators)):
+            i += 1
+        return None, None, i
+
+    return "Integer", lexeme, i
 
 
 
 def lex_real(text, i):
-    
-    state = "start"
     lexeme = ""
-    decimal_found = False
 
-    while i < len(text):
-         ch = text[i]
-         if state == "start":
-            if ch.isdigit():
-                 state = "real"
-                 lexeme += ch
-                 i += 1
-            else:
-                break
-         elif state == "real":
-            if ch.isdigit():
-                 lexeme += ch
-                 i += 1
-            elif ch == "." and not decimal_found:
-                decimal_found = True
-                lexeme += ch
-                i += 1
-            else:
-                break
+    while i < len(text) and text[i].isdigit():
+        lexeme += text[i]
+        i += 1
 
-    if decimal_found:
-        return "Real", lexeme, i
-    return None
+    if i < len(text) and text[i] == '.':
+        lexeme += '.'
+        i += 1
+    else:
+        return None
+
+    if i < len(text) and text[i].isdigit():
+        while i < len(text) and text[i].isdigit():
+            lexeme += text[i]
+            i += 1
+    else:
+        while i < len(text) and not (text[i].isspace() or text[i] in separators or any(text.startswith(op, i) for op in operators)):
+            i += 1
+        return None, None, i
+
+    if i < len(text) and text[i].isalpha():
+        while i < len(text) and not (text[i].isspace() or text[i] in separators or any(text.startswith(op, i) for op in operators)):
+            i += 1
+        return None, None, i
+
+    return "Real", lexeme, i
+    
     
 
 def lex_comment(text):
-    start = text.find('"')
-    if start != -1:
-        end = start
-        while text[end+1] != '"':
-            end += 1
-    return text[0:start] + text[end:]
+    result = ""
+    in_comment = False
+    for ch in text:
+        if ch == '"':
+            in_comment = not in_comment
+        elif not in_comment:
+            result += ch
+    return result
 
 
 def lexer(text, start_index):
@@ -117,26 +112,31 @@ def lexer(text, start_index):
     if result:
         return result
 
+
     
 
     # Operators and Separators
+    for op in sorted(operators, key=len, reverse=True):
+        if text.startswith(op, start_index):
+            return ("Operator", op, start_index + len(op))
     ch = text[start_index]
-    if ch in operators:
-        return ("Operator", ch, start_index + 1)
     if ch in separators:
         return ("Separator", ch, start_index + 1)
+    
+    return None, None, start_index+1
 
 
 def main():
 
 
-    sources = ["source01.rat25f", "source02.rat25f", "source03.rat25f"]
-    outputs = ["output01.txt", "output02.txt", "output03.txt"]
+    sources = ["t1.txt"]
+    outputs = ["o1.txt"]
 
     for filename, output_filename in zip(sources, outputs):
 
         with open(filename, "r") as f:
             source_code = f.read()
+            source_code = lex_comment(source_code)
 
         with open(output_filename, "w") as out:
 
@@ -152,11 +152,10 @@ def main():
                     index += 1
                     continue
 
-                result = lexer(source_code, index)
-                if not result:
-                    break
+                token, lexeme, index = lexer(source_code, index)
 
-                token, lexeme, index = result
+                if not token:
+                    continue
             
                 print(f"{token:<15} | {lexeme:>10}\n")
                 out.write(f"{token:<15} | {lexeme:>10}\n")
